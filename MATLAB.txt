@@ -1,0 +1,6 @@
+Silmulink常见回调
+
+LED;               %运行.m文件
+load('DriveCycles.mat');                  %导入.mat文件                          
+set_param(gcs,'StopTime',num2str(DrCycles.HWFET(end,1)));     %设置仿真
+
