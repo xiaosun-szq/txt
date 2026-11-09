@@ -4,3 +4,107 @@ LED;               %运行.m文件
 load('DriveCycles.mat');                  %导入.mat文件                          
 set_param(gcs,'StopTime',num2str(DrCycles.HWFET(end,1)));     %设置仿真
 
+
+Silmulink自定义库
+    命令
+    set_param(gcs,'EnableLBRepository','on');
+
+    m脚本
+    function blkStruct = slblocks
+    % This function specifies that the library 'mylib'
+    % should appear in the Library Browser with the
+    % name 'My Library'
+
+    Browser.Library = 'test';
+    % 'mylib' is the name of the library
+
+    Browser.Name = 'My_Library';
+    % 'My Library' is the library name that appears
+    % in the Library Browser
+
+    blkStruct.Browser = Browser;
+
+    m脚本
+    function sl_customization(cm)
+    % Change the order of libraries in the Simulink Library Browser.
+    cm.LibraryBrowserCustomizer.applyOrder({'My_Library',-2});
+    end
+
+    命令
+    sl_refresh_customizations
+
+
+
+我们也可以使用 m 脚本来创建 Simulink.Parameter
+
+m = Simulink.Parameter;
+m.Value = 1200;
+m.Complexity = 'real';
+m.CoderInfo.StorageClass = 'Auto';
+m.Description = '质量';
+m.DataType = 'uint16';
+m.Min = [];
+m.Max = [];
+m.DocUnits = 'kg';
+
+
+我们也可以使用 m 脚本来创建 Simulink.Bus
+
+VehicleInfo = Simulink.Bus;
+VehicleInfo.Description = 'vehicle information';
+VehicleInfo.DataScope = 'Auto';
+% VehicleInfo.HeaderFile = 'yes.h';
+VehicleInfo.Alignment = -1;
+VehicleInfo.PreserveElementDimensions = false;
+
+BusElements(1) = Simulink.BusElement;
+BusElements(1).Name = 'mass';
+BusElements(1).Complexity = 'real';
+BusElements(1).Dimensions = 1;
+BusElements(1).DataType = 'int16';
+BusElements(1).Min = [];
+BusElements(1).Max = [];
+BusElements(1).DimensionsMode = 'Fixed';
+BusElements(1).SamplingMode = 'Sample based';
+BusElements(1).DocUnits = 'kg';
+BusElements(1).Description = '';
+
+BusElements(2) = Simulink.BusElement;
+BusElements(2).Name = 'wheelBase';
+BusElements(2).Complexity = 'real';
+BusElements(2).Dimensions = 1;
+BusElements(2).DataType = 'uint16';
+BusElements(2).Min = [];
+BusElements(2).Max = [];
+BusElements(2).DimensionsMode = 'Fixed';
+BusElements(2).SamplingMode = 'Sample based';
+BusElements(2).DocUnits = 'mm';
+BusElements(2).Description = '';
+
+BusElements(3) = Simulink.BusElement;
+BusElements(3).Name = 'maxSpeed';
+BusElements(3).Complexity = 'real';
+BusElements(3).Dimensions = 1;
+BusElements(3).DataType = 'single';
+BusElements(3).Min = [];
+BusElements(3).Max = [];
+BusElements(3).DimensionsMode = 'Fixed';
+BusElements(3).SamplingMode = 'Sample based';
+BusElements(3).DocUnits = 'kmph';
+BusElements(3).Description = '';
+
+VehicleInfo.Elements = BusElements;
+clear BusElements;
+
+
+我们也可以使用 m 脚本来创建 枚举类型
+
+Simulink.defineIntEnumType('BasicColors', ...
+    {'Red', 'Yellow', 'Blue'}, ...
+    [0;1;2], ...
+    'Description', 'Basic colors', ...
+    'DefaultValue', 'Blue', ...
+    'DataScope', 'Auto', ...
+    'AddClassNameToEnumNames', true, ...
+    'StorageType', 'int16');
+
